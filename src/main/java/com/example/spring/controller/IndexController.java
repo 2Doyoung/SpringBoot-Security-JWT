@@ -3,6 +3,8 @@ package com.example.spring.controller;
 import com.example.spring.model.User;
 import com.example.spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,6 +61,11 @@ public class IndexController {
         user.setPassword(encodePassword);
         userRepository.save(user);
         return "redirect:/loginForm";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "accessDenied";
     }
 
     @Secured("ROLE_ADMIN")

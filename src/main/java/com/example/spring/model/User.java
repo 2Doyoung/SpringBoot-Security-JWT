@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Data
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본키 생성을 DB로 위임
     private int id;
     private String username;
     private String password;
