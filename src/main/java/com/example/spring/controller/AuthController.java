@@ -3,6 +3,8 @@ package com.example.spring.controller;
 import com.example.spring.auth.JwtTokenProvider;
 import com.example.spring.model.User;
 import com.example.spring.repository.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +49,7 @@ public class AuthController {
 
     // 로그인 API
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password) {
+    public String login(@RequestParam String username, @RequestParam String password, HttpServletResponse response) {
         // 사용자 조회
         User user = userRepository.findByUsername(username);
 
@@ -58,6 +60,12 @@ public class AuthController {
 
         // JWT 토큰 생성
         String token = jwtTokenProvider.createToken(username, user.getRole());
+        Cookie cookie = new Cookie("token", token);
+        cookie.setHttpOnly(true); // JavaScript에서 접근 불가
+        cookie.setPath("/");
+        cookie.setMaxAge(3600); // 1시간
+
+        response.addCookie(cookie);
         return "Bearer " + token;
     }
 }
