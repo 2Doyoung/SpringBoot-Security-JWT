@@ -53,7 +53,7 @@ public class AuthController {
 
         // 비밀번호 확인
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+            throw new RuntimeException("Invalid password ㅎ");
         }
 
         // JWT 토큰 생성
