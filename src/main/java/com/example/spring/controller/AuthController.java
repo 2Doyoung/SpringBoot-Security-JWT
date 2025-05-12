@@ -7,10 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/auth")
@@ -26,8 +23,8 @@ public class AuthController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/access")
-    public String accessDenied() {
+    @GetMapping("/loginForm")
+    public String loginForm() {
         return "loginForm";
     }
 
@@ -55,7 +52,7 @@ public class AuthController {
 
         // 비밀번호 확인
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid password ㅎ");
+            throw new RuntimeException("Invalid password");
         }
 
         // JWT 토큰 생성
@@ -66,6 +63,15 @@ public class AuthController {
         cookie.setMaxAge(3600); // 1시간
 
         response.addCookie(cookie);
-        return "Bearer " + token;
+        return "redirect:/";
+    }
+
+    @GetMapping("/check")
+    public String check(@CookieValue(value = "token", required = false) String token) {
+        if (token != null && jwtTokenProvider.validateToken(token)) {
+            String username = jwtTokenProvider.getUsernameFromToken(token);
+            return "안녕하세요, " + username + "님!";
+        }
+        return "유효하지 않은 인증입니다.";
     }
 }

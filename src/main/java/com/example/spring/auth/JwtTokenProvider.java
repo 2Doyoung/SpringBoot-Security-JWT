@@ -3,9 +3,11 @@ package com.example.spring.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
 import java.util.Date;
 
 // JWT 생성/검증
@@ -14,6 +16,11 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
+
+    @PostConstruct
+    public void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    }
 
     private final long validityInMilliseconds = 3600000; // 1시간 유효
 
